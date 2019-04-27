@@ -69,8 +69,7 @@ Let's break down what's happening here. In the `FadeInView` constructor, a new `
 
 When the component mounts, the opacity is set to 0. Then, an easing animation is started on the `fadeAnim` animated value, which will update all of its dependent mappings (in this case, just the opacity) on each frame as the value animates to the final value of 1.
 
-This is done in an optimized way that is faster than calling `setState` and re-rendering.  
-Because the entire configuration is declarative, we will be able to implement further optimizations that serialize the configuration and runs the animation on a high-priority thread.
+This is done in an optimized way that is faster than calling `setState` and re-rendering. Because the entire configuration is declarative, we will be able to implement further optimizations that serialize the configuration and runs the animation on a high-priority thread.
 
 ### Configuring animations
 
