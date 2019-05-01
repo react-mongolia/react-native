@@ -7,7 +7,7 @@ title: AppState
 
 AppState is frequently used to determine the intent and proper behavior when handling push notifications.
 
-### App States
+### Апп төлөв
 
 - `active` - The app is running in the foreground
 - `background` - The app is running in the background. The user is either:
