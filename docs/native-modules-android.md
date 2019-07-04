@@ -1,27 +1,25 @@
 ---
 id: native-modules-android
-title: Native Modules
+title: Натив модулиуд
 ---
 
-Sometimes an app needs access to a platform API that React Native doesn't have a corresponding module for yet. Maybe you want to reuse some existing Java code without having to reimplement it in JavaScript, or write some high performance, multi-threaded code such as for image processing, a database, or any number of advanced extensions.
+Заримдаа апп нь React Native-ын зохих хариу өгөх модульгүйгээр платформ API-д хандах хэрэгтэй болдог. Магадгүй Javascript-руу дахин өөрчлөхгүйгээр бэлэн байгаа Java код ашиглах эсвэл зураг процесс хийх, өгөгдлийн сан эсвэл ахисан түвшний өргөтгөл гэх мэтэд зориулсан ажиллагааг сайжруулах, олон процесст зориулсан код бичих хэрэг гарч болно.
 
-We designed React Native such that it is possible for you to write real native code and have access to the full power of the platform. This is a more advanced feature and we don't expect it to be part of the usual development process, however it is essential that it exists. If React Native doesn't support a native feature that you need, you should be able to build it yourself.
+Бид React Native-ыг хүн өөрөө натив код бичих боломжтой байхаар загварчилсан ба платформыг бүрэн ашиглах боломжийг та бүхэнд олгохыг хүссэн. Энэ нь илүү ахисан түвшний функц бөгөөд бид энгийн хөгжүүлэлтийн явцад төдийлөн ашиглагдахгүй байх гэж бодож байна. Гэхдээ байх нь чухал. Хэрэв React Native-т танд хэрэгтэй натив функц байхгүй бол та өөрөө хийх боломжтой юм. 
 
-## Native Module Setup
+## Натив модулийн тохиргоо
 
-Native modules are usually distributed as npm packages, apart from the typical javascript files and resources they will contain an Android library project. This project is, from NPM's perspective just like any other media asset, meaning there isn't anything special about it from this point of view. To get the basic scaffolding make sure to read [Native Modules Setup](native-modules-setup) guide first.
+Натив модулиуд нь ихэвчлэн npm пакэж хэлбэрээр байдаг. Энгийн javascript файлууд, зүйлсээс бусдаар бол тэд нь Android сангийн төслүүд агуулсан байна. Энэхүү төсөл нь NPM-ын талаас бол бусад медиа төрлийн зүйл байх юм. Энэ нь ямар нэг онцгой зүйлгүй гэсэн үг. Код автоматаар үүсгэх тухай үндсэн ойлголттой болохыг хүсвэл [Натив Модулийн Тохиргоо](native-modules-setup) гэснийг уншина уу.
 
-### Enable Gradle
+### Gradle-ыг идэвхжүүлэх
 
-If you plan to make changes in Java code, we recommend enabling [Gradle Daemon](https://docs.gradle.org/2.9/userguide/gradle_daemon.html) to speed up builds.
+Хэрэв та Java коддоо өөрчлөлт хийх бол цаг хэмнэх зорилгоор [Gradle Daemon](https://docs.gradle.org/2.9/userguide/gradle_daemon.html)-ыг идэвхжүүлэхийг санал болгож байна. 
 
-## The Toast Module
+## Toast модуль
 
-This guide will use the [Toast](http://developer.android.com/reference/android/widget/Toast.html) example. Let's say we would like to be able to create a toast message from JavaScript.
+[Toast](http://developer.android.com/reference/android/widget/Toast.html) ашиглах тухай энэхүү зөвлөмжийг уншина уу. Javascript-ээр тоаст мессеж хийдэг болгоё гэж бодъё. Эхлээд натив модулиа үүсгэнэ. Натив модуль нь Java класс байх ба  `ReactContextBaseJavaModule`  гэсэн өргөтгөлтэй ихэвчлэн байдаг. Javascript-д шаарддаг ажиллах орчинг бий болгодог. Бидний зорилго бол дэлгэц дээр богино мессеж харуулахын тулд JavaScript-ээс `ToastExample.show('Awesome', ToastExample.SHORT);` гэж бичиж оруулах юм. 
 
-We start by creating a native module. A native module is a Java class that usually extends the `ReactContextBaseJavaModule` class and implements the functionality required by the JavaScript. Our goal here is to be able to write `ToastExample.show('Awesome', ToastExample.SHORT);` from JavaScript to display a short toast on the screen.
-
-Create a new Java Class named `ToastModule.java` inside `android/app/src/main/java/com/your-app-name/` folder with the content below:
+`android/app/src/main/java/com/your-app-name/` дотор `ToastModule.java` нэртэй доорхыг агуулсан Java класс үүсгэ:
 
 ```java
 // ToastModule.java
@@ -50,7 +48,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
 }
 ```
 
-`ReactContextBaseJavaModule` requires that a method called `getName` is implemented. The purpose of this method is to return the string name of the `NativeModule` which represents this class in JavaScript. So here we will call this `ToastExample` so that we can access it through `React.NativeModules.ToastExample` in JavaScript.
+`ReactContextBaseJavaModule` нь `getName` -ыг ажиллуулахыг шаарддаг. Үүний зорилго нь Javascript дээр уг классыг харуулдаг `NativeModule`-ын стринг нэрийг буцаах юм. Тэгэхээр бид үүнийг `ToastExample` гэж нэрлэх ба Javascript дээр `React.NativeModules.ToastExample` гэж дуудна.
 
 ```java
   @Override
@@ -59,7 +57,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
   }
 ```
 
-An optional method called `getConstants` returns the constant values exposed to JavaScript. Its implementation is not required but is very useful to key pre-defined values that need to be communicated from JavaScript to Java in sync.
+`getConstants` гэх өөр нэг хэрэглүүр нь Javascript-т ирсэн тогтмол утгыг буцаадаг. Гүйцэтгэлийг заавал шаардлагагүй ч Javascript-ээс Java руу шууд дамжих утгыг урьдчилан тодорхойлоход чухал үүрэгтэй. 
 
 ```java
   @Override
@@ -70,8 +68,7 @@ An optional method called `getConstants` returns the constant values exposed to 
     return constants;
   }
 ```
-
-To expose a method to JavaScript a Java method must be annotated using `@ReactMethod`. The return type of bridge methods is always `void`. React Native bridge is asynchronous, so the only way to pass a result to JavaScript is by using callbacks or emitting events (see below).
+Javascript руу хэрэглүүр өгөхийн тулд Java руу нь `@ReactMethod` ашиглах хэрэгтэй. Энэхүү холбох хэрэглүүрийн буцах төрөл нь үргэлж `void` байна.  React Native bridge үйлдэл нь синхрон бус байдаг. Тиймээc Javascript руу аливаа үр дүнг дамжуулах ганц арга нь буцааж дуудах эсвэл эвент өгөх юм (доорхыг харна уу).
 
 ```java
   @ReactMethod
@@ -80,9 +77,9 @@ To expose a method to JavaScript a Java method must be annotated using `@ReactMe
   }
 ```
 
-### Argument Types
+### Аргументын төрлүүд
 
-The following argument types are supported for methods annotated with `@ReactMethod` and they directly map to their JavaScript equivalents
+Аргументын доорх төрлүүдийг `@ReactMethod` гэж тэмдэглэсэн хэрэглүүрүүд дэмждэг. Эдгээр нь шууд JavaScript-ын адил төрлийг шууд хуулдаг
 
 ```
 Boolean -> Bool
@@ -95,13 +92,13 @@ ReadableMap -> Object
 ReadableArray -> Array
 ```
 
-Read more about [ReadableMap](https://github.com/facebook/react-native/blob/master/ReactAndroid/src/main/java/com/facebook/react/bridge/ReadableMap.java) and [ReadableArray](https://github.com/facebook/react-native/blob/master/ReactAndroid/src/main/java/com/facebook/react/bridge/ReadableArray.java)
+[ReadableMap](https://github.com/facebook/react-native/blob/master/ReactAndroid/src/main/java/com/facebook/react/bridge/ReadableMap.java) болон [ReadableArray](https://github.com/facebook/react-native/blob/master/ReactAndroid/src/main/java/com/facebook/react/bridge/ReadableArray.java)  хоёроос дэлгэрэнгүй уншина уу.
 
-### Register the Module
+### Модулиа бүртгүүлэх 
 
-The last step within Java is to register the Module; this happens in the `createNativeModules` of your apps package. If a module is not registered it will not be available from JavaScript.
+Java-д хийх сүүлийн алхам бол модулиа бүртгүүлэх юм. Аппын чинь пакэж дотор `createNativeModules` дотор энэ үйлдлийг хийнэ. Хэрэв модулиа бүртгүүлэхгүй бол Javascript-ээр ажиллахгүй. 
 
-create a new Java Class named `CustomToastPackage.java` inside `android/app/src/main/java/com/your-app-name/` folder with the content below:
+`android/app/src/main/java/com/your-app-name/` фолдер дотор доорхыг агуулсан `CustomToastPackage.java` нэртэй шинэ Java класс үүсгэ:
 
 ```java
 // CustomToastPackage.java
@@ -136,8 +133,7 @@ public class CustomToastPackage implements ReactPackage {
 
 }
 ```
-
-The package needs to be provided in the `getPackages` method of the `MainApplication.java` file. This file exists under the android folder in your react-native application directory. The path to this file is: `android/app/src/main/java/com/your-app-name/MainApplication.java`.
+Пакэж нь `MainApplication.java` файлын `getPackages` хэрэглүүрт өгөгдсөн байх хэрэгтэй. Уг файл нь таны react-native application directory дотор android фолдерт байна.  Зам нь `android/app/src/main/java/com/your-app-name/MainApplication.java`.
 
 ```java
 // MainApplication.java
@@ -153,9 +149,9 @@ protected List<ReactPackage> getPackages() {
 }
 ```
 
-To make it simpler to access your new functionality from JavaScript, it is common to wrap the native module in a JavaScript module. This is not necessary but saves the consumers of your library the need to pull it off of `NativeModules` each time. This JavaScript file also becomes a good location for you to add any JavaScript side functionality.
+Шинэ ажиллагаа руугаа Javascript-ээс хялбар ханддаг байхын тулд натив модулиа Javascript модуль болгох нь түгээмэл байдаг. Заавал ингэх шаардлагагүй ч таны санг ашиглах хэрэглэгчид байнга `NativeModules` гэж дуудах ажлыг нь хөнгөвчилж өгөх юм. Javascript-ын энэхүү файл нь дараа нь ямар нэг Javascript-ын ажиллагаа нэмэхэд дөхөм байх юм. 
 
-Create a new JavaScript file named `ToastExample.js` with the content below:
+Доорхыг агуулсан `ToastExample.js` нэртэй Javascript файл үүсгэ:
 
 ```javascript
 /**
@@ -170,7 +166,7 @@ import {NativeModules} from 'react-native';
 module.exports = NativeModules.ToastExample;
 ```
 
-Now, from your other JavaScript file you can call the method like this:
+Одоо өөр Javascript файлаасаа ингэж дуудна:
 
 ```javascript
 import ToastExample from './ToastExample';
@@ -178,13 +174,13 @@ import ToastExample from './ToastExample';
 ToastExample.show('Awesome', ToastExample.SHORT);
 ```
 
-Please make sure this JavasScript file to be the same hierarchy as `ToastExample.js`.
+Энэ Javascript файл нь `ToastExample.js`-тай ижил түвшинд байгаа гэдгийг шалгаарай. 
 
-## Beyond Toasts
+## Toast-аас гадна
 
-### Callbacks
+### Буцааж дуудах
 
-Native modules also support a special kind of argument - a callback. In most cases it is used to provide the function call result to JavaScript.
+Натив модулиуд нь буцааж дуудах гэсэн онцгой төрлийн аргументыг дэмждэг. Ихэнх тохиолдолд Javascript-д функцийн дуудсан үр дүнг өгдөг. 
 
 ```java
 import com.facebook.react.bridge.Callback;
@@ -214,7 +210,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule {
 ...
 ```
 
-This method would be accessed in JavaScript using:
+Үүнийг ашиглан Javascript-д уг хэрэглүүрт хандах боломжтой:
 
 ```javascript
 UIManager.measureLayout(
@@ -229,15 +225,16 @@ UIManager.measureLayout(
 );
 ```
 
-A native module is supposed to invoke its callback only once. It can, however, store the callback and invoke it later.
+Натив модуль нь буцаан дуудах үйлдлийг нэг л удаа хүргэнэ. Гэхдээ буцааж дуудах үйлдлийг хадгалаад дараа нь хүргэж болдог. 
 
-It is very important to highlight that the callback is not invoked immediately after the native function completes - remember that bridge communication is asynchronous, and this too is tied to the run loop.
+Натив функц ажиллаж дууссаны дараа шууд буцаан дуудах үйлдэл хийгддэггүй гэдгийг санах хэрэгтэй. Холбох үйлдэл нь синхрон бус явагддаг гэдгийг мартаж болохгүй. 
+
 
 ### Promises
 
-Native modules can also fulfill a promise, which can simplify your code, especially when using ES2016's `async/await` syntax. When the last parameter of a bridged native method is a `Promise`, its corresponding JS method will return a JS Promise object.
+Натив модуль promise гүйцэтгэдэг. Тиймдээ ч таны кодыг хялбарчилна.  Ялангуяа ES2016-ын `async/await` синтакс ашиглаж байгаа үед. Холболт бүхий натив хэрэглүүрийн сүүлийн параметр нь `Promise` бол холбогдох JS хэрэглүүр нь нэг JS Promise объект руу буцаадаг. 
 
-Refactoring the above code to use a promise instead of callbacks looks like this:
+Дээрх кодыг буцаах дуудлагын оронд promise ашиглавал иймэрхүү харагдана:
 
 ```java
 import com.facebook.react.bridge.Promise;
@@ -269,8 +266,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule {
 
 ...
 ```
-
-The JavaScript counterpart of this method returns a Promise. This means you can use the `await` keyword within an async function to call it and wait for its result:
+Энэ хэрэглүүрийн Javascript тал нь Promise-руу хүргэнэ. Энэ нь бид дуудахдаа `await` түлхүүр үг ашиглан үр дүнг нь хүлээнэ гэсэн үг:
 
 ```javascript
 async function measureLayout() {
@@ -291,11 +287,11 @@ measureLayout();
 
 ### Threading
 
-Native modules should not have any assumptions about what thread they are being called on, as the current assignment is subject to change in the future. If a blocking call is required, the heavy work should be dispatched to an internally managed worker thread, and any callbacks distributed from there.
+Натив модуль нь ямар салбар процесс дээр дуудагдаж байгаа тухай ямар нэг ойлголт авах учиргүй. Одоогийн гүйцэтгэж буй даалгавар нь ирээдүйд өөр байх боломжтой учраас тэр. Хэрэв дуудахад блок хийх шаардлагатай бол салбар процесст болон буцаах дуудлагад их ачаал ирнэ. 
 
-### Sending Events to JavaScript
+### JavaScript руу эвент илгээх
 
-Native modules can signal events to JavaScript without being invoked directly. The easiest way to do this is to use the `RCTDeviceEventEmitter` which can be obtained from the `ReactContext` as in the code snippet below.
+Натив модуль нь эвентийн тухай мэдээллийг шууд хүргэхгүйгээр дохио мэдээлэл Javascript руу өгч болдог. Доорх код шиг `ReactContext`-аас `RCTDeviceEventEmitter`-ыг авч ашиглах нь хамгийн хялбар арга юм.
 
 ```java
 ...
@@ -312,7 +308,8 @@ WritableMap params = Arguments.createMap();
 sendEvent(reactContext, "keyboardWillShow", params);
 ```
 
-JavaScript modules can then register to receive events by `addListenerOn` using the `Subscribable` mixin.
+JavaScript модуль нь `Subscribable` ашиглан `addListenerOn`-аар дамжуулан эвентийг хүлээн аван бүртгэж чадна.
+
 
 ```javascript
 import { DeviceEventEmitter } from 'react-native';
@@ -335,7 +332,7 @@ var ScrollResponderMixin = {
   },
 ```
 
-You can also directly use the `DeviceEventEmitter` module to listen for events.
+Мөн та эвентийн талаарх мэдээллийг `DeviceEventEmitter` ашиглан хүлээх боломжтой.
 
 ```javascript
 ...
@@ -352,15 +349,16 @@ componentWillUnmount() {
 ...
 ```
 
-### Getting activity result from `startActivityForResult`
+### `startActivityForResult`-аас үйл ажиллагааны үр дүнг хүлээн авах
 
-You'll need to listen to `onActivityResult` if you want to get results from an activity you started with `startActivityForResult`. To do this, you must extend `BaseActivityEventListener` or implement `ActivityEventListener`. The former is preferred as it is more resilient to API changes. Then, you need to register the listener in the module's constructor,
+Та `startActivityForResult` ашиглан ямар нэг үйл ажиллагаа эхлүүлсэн бол `onActivityResult` ашиглан түүнийхээ үр дүнг хүлээн авах хэрэгтэй. Ингэхийн тулд `BaseActivityEventListener`-ыг өргөтгөх эсвэл  `ActivityEventListener`-ыг ажиллуулах шаардлагатай. API өөрчлөлт орсон ч сайн ажиллаж байдаг тул эхнийх нь илүү давуу талтай. Тэгээд та тухайн модулийнхаа байгуулагч функц дотор нь бүртгүүлнэ. 
+
 
 ```java
 reactContext.addActivityEventListener(mActivityResultListener);
 ```
 
-Now you can listen to `onActivityResult` by implementing the following method:
+Одоо та доорх аргын дагуу `onActivityResult`-ыг харах боломжтой:
 
 ```java
 @Override
@@ -373,7 +371,7 @@ public void onActivityResult(
 }
 ```
 
-We will implement a simple image picker to demonstrate this. The image picker will expose the method `pickImage` to JavaScript, which will return the path of the image when called.
+Тодорхой харуулахын тулд энгийн зураг сонгох үйлдлийг хийе. Зураг сонгогч нь JavaScript-т `pickImage` гэж хэрэглүүрийг ашиглана. Ингээд тухайн зургийг дуудсан замд нь буцаана. 
 
 ```java
 public class ImagePickerModule extends ReactContextBaseJavaModule {
@@ -450,15 +448,17 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
 }
 ```
 
-### Listening to LifeCycle events
+### LifeCycle эвент тандах
 
-Listening to the activity's LifeCycle events such as `onResume`, `onPause` etc. is very similar to how we implemented `ActivityEventListener`. The module must implement `LifecycleEventListener`. Then, you need to register a listener in the module's constructor,
+`onResume`, `onPause` гэх мэт LifeCycle эвентүүдийг тандах процесс нь `ActivityEventListener`-ыг хэрхэн ажиллуулдагтай их төстэй. Модуль нь `LifecycleEventListener`-ыг ажиллуулах ёстой. Тэгээд та модулийн байгуулагч функц дотор эвент болохыг хүлээгчээ бүртгүүлэх хэрэгтэй. 
+
 
 ```java
 reactContext.addLifecycleEventListener(this);
 ```
 
-Now you can listen to the activity's LifeCycle events by implementing the following methods:
+Одоо та доорх хэрэглүүрийг ажиллуулан Lifecycle эвентийн үйл ажиллагааг тандах боломжтой:
+
 
 ```java
 @Override
